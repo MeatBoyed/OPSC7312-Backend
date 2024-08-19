@@ -1,0 +1,19 @@
+{
+  "status": "ok",
+  "totalResults": 399,
+  "articles": [
+    {
+      "source": {
+        "id": "techcrunch",
+        "name": "TechCrunch"
+      },
+      "author": "Anthony Ha",
+      "title": "Digitally resurrecting actors is still a terrible idea | TechCrunch",
+      "description": "This post contains spoilers for the movie “Alien: Romulus” In the long-running Alien movie franchise, the Weyland-Yutani Corporation can’t seem to let go",
+      "url": "https://techcrunch.com/2024/08/18/digitally-resurrecting-actors-is-still-a-terrible-idea/",
+      "urlToImage": "https://techcrunch.com/wp-content/uploads/2024/08/alien-romulus.jpg?w=1000",
+      "publishedAt": "2024-08-18T22:02:04Z",
+      "content": "This post contains spoilers for the movie Alien: Romulus\r\nIn the long-running Alien movie franchise, the Weyland-Yutani Corporation cant seem to let go of a terrible idea: It keeps trying to make a p… [+3003 chars]"
+    }
+  ]
+}
