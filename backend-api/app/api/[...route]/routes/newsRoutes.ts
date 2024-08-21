@@ -1,6 +1,7 @@
 import { createRoute, z } from "@hono/zod-openapi";
 import { ErrorNewsResponseSchema, HomeResponseSchema, SuccessNewsResponseSchema } from "@/schemas/newsResponses";
 import { resourceLimits } from "worker_threads";
+import { exampleArticle } from "@/lib/openapiConfig";
 
 export const homeRoute = createRoute({
   method: "get",
@@ -66,9 +67,10 @@ export const getNewsArticleRoute = createRoute({
           name: "title",
           in: "path",
         },
-        example: "Jacob%Zuma%did%20something%crazy",
-        description:
-          "Ensure that the title is url encoded (i.e. normal title: 'Jacob Zuma did something crazy', encoded title: Jacob%Zuma%did%20something%crazy)",
+        example: exampleArticle.title,
+        description: `Ensure that the title is url encoded (i.e. normal title: '${
+          exampleArticle.title
+        }', encoded title: ${encodeURI(exampleArticle.title)})`,
       }),
     }),
   },
