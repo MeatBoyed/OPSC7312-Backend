@@ -1,9 +1,10 @@
 import { handle } from "hono/vercel";
 import { logger } from "hono/logger";
 import { homeRoute } from "./routes/routes";
-import { swaggerUI } from "@hono/swagger-ui";
+import { SwaggerUI, swaggerUI } from "@hono/swagger-ui";
 import { OpenAPIHono } from "@hono/zod-openapi";
 import newsController from "./controllers/newsController";
+import descriptionAPI from "@/lib/descriptionAPI";
 
 const app = new OpenAPIHono({
   defaultHook: (res, c) => {
@@ -40,10 +41,10 @@ app.get(
 // Provide raw JSON for API docs
 app.doc("/doc", {
   openapi: "3.0.0",
-
   info: {
     version: "1.0.0",
-    title: "My API",
+    title: "OPSC7312-Backend API Documentation",
+    description: descriptionAPI,
   },
 });
 
