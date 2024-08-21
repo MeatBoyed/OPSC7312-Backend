@@ -39,7 +39,7 @@ export class NewsError extends Exception {
    * @param message
    * @param code
    */
-  constructor(message = "Internal Error in News SDK", code = 500 as ServerErrorStatusCode) {
+  constructor(message = "Internal Error in News SDK", code: StatusCode) {
     super(message, code);
   }
 }

@@ -7,18 +7,21 @@
  * Handles converting data into a Success Response object
  * Handles creating respective HTTP Exceptions
  */
-import { handleError } from "@/exceptions";
+import { handleAPIError, makeAPIError } from "@/exceptions";
 import NewsRepository from "../news";
-import { makeArticlesResponse } from "../utils";
+import { makeArticlesResponse, makeErrorNewsResponse, makeSuccessNewsResponse } from "../utils";
+import { HTTPException } from "hono/http-exception";
+import { ErrorNewsResponse, SuccessNewsResponse } from "@/schemas";
+import { NewsError } from "@/exceptions/server";
 
 /**
  * Interface for the Business Layer.
  *
  * Returns a Success Response on Success.
  * Returns an HTTP Exception on Error
- * @interface INewsRepository
+ * @interface IBusinessService
  */
-export default class BusinessService {
+export default class BusinessService implements IBusinessService {
   private newsRepository: NewsRepository;
 
   constructor() {
@@ -29,25 +32,30 @@ export default class BusinessService {
     try {
       const articles = await this.newsRepository.getArticles();
 
-      if (articles.length === 0) return makeArticlesResponse(articles, "No articles found, please try again.");
-      return makeArticlesResponse(articles);
+      if (articles.length === 0) return makeAPIError(404, "No articles found, please try again.");
+      return makeSuccessNewsResponse(articles);
     } catch (error) {
       console.log("Business Service Error, getArticles: ", error);
-      return handleError(error);
+      return handleAPIError(error);
     }
   }
 
   async getArticlesByTitle(title: string) {
     try {
       const article = await this.newsRepository.getArticleByTitle(title);
-      if (!article) {
-        const error = new Error("No article found, please try again.");
-        throw error;
-      }
-      return article;
+      return makeSuccessNewsResponse([article]);
     } catch (error) {
       console.log("Business Service Error, getArticlesByTitle: ", error);
-      return handleError(error);
+      if (error instanceof NewsError) {
+        return makeAPIError(error.code, error.message);
+      }
+      return handleAPIError(error);
     }
   }
+}
+
+// Bussiness Service Interface
+interface IBusinessService {
+  getArticles(): Promise<SuccessNewsResponse | HTTPException>;
+  getArticlesByTitle(title: string): Promise<SuccessNewsResponse | HTTPException>;
 }

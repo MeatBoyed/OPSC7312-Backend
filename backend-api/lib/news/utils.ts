@@ -7,6 +7,7 @@ import { isLink, cleanseText, cleanseHtmlTags } from "@/lib/utils";
 import { newsSources } from "@/lib/news/constants";
 import { BadRequest } from "@/exceptions/server";
 import { findChild, findElement } from "./cheerio";
+import { RSSArticle } from "@/schemas";
 
 export const isValidSource = (sourceName: string) => !!newsSources.find((src) => src.code === sourceName.toUpperCase());
 
@@ -29,7 +30,7 @@ export const validateSource = (sourceName: string | null) => {
 /**
  * Creates a Base Article from an Item element
  * @param itemElement An item element from the RSS feed
- * @returns BaseArticle
+ * @returns rssArticle
  */
 export const articleFromItem = (itemElement: Cheerio<any>) => {
   // Assign elements
@@ -54,7 +55,7 @@ export const articleFromItem = (itemElement: Cheerio<any>) => {
   // TODO: Validate that its a link
   const thumbnail = thumbnailElement?.attr()?.url;
 
-  const baseArticle: BaseArticle = {
+  const rssArticle: RSSArticle = {
     title,
     link,
     description,
@@ -62,7 +63,7 @@ export const articleFromItem = (itemElement: Cheerio<any>) => {
     thumbnail,
   };
 
-  return baseArticle;
+  return rssArticle;
 };
 
 /**
@@ -70,7 +71,7 @@ export const articleFromItem = (itemElement: Cheerio<any>) => {
  * TODO: Provide some URL formating to provide Thumbnail, and link.
  * TODO: Try storing data in a database to retrieve more info
  * @param itemElement An item element from the RSS feed
- * @returns BaseArticle
+ * @returns rssArticle
  */
 export const articleFromChannel = (itemElement: Cheerio<any>) => {
   // Assign elements
@@ -88,17 +89,17 @@ export const articleFromChannel = (itemElement: Cheerio<any>) => {
   if (!isLink(link)) return null;
   const pubDate = pubDateElement.text().trim();
 
-  const baseArticle: BaseArticle = {
+  const rssArticle: RSSArticle = {
     title,
     link,
     pubDate,
   };
 
-  return baseArticle;
+  return rssArticle;
 };
 
 // Extracts a single article from a response
-export const atricleFromResponse = (responseText: string, url: string): Article | undefined => {
+export const atricleFromResponse = (responseText: string, url: string): RSSArticle | undefined => {
   const $ = load(responseText, { xmlMode: true });
 
   // Assign list of Items
@@ -109,13 +110,13 @@ export const atricleFromResponse = (responseText: string, url: string): Article 
   }
 
   // Extract articles from items
-  const baseArticle = articleFromItem(channel);
-  if (!baseArticle) return undefined;
-  return { source: url, ...baseArticle };
+  const rssArticle = articleFromItem(channel);
+  if (!rssArticle) return undefined;
+  return rssArticle;
 };
 
 // Extracts a multiple articles from a response
-export const articlesFromResponse = (responseText: string, url: string): Article[] => {
+export const articlesFromResponse = (responseText: string, url: string): RSSArticle[] => {
   const $ = load(responseText, { xmlMode: true });
 
   // Assign list of Items
@@ -126,17 +127,15 @@ export const articlesFromResponse = (responseText: string, url: string): Article
   }
 
   // Extract articles from items
-  const articles: Article[] = [];
+  const articles: RSSArticle[] = [];
   for (let i = 0; i < items.length; i++) {
     const element = items.eq(i);
     const itemElement = $(element);
 
-    const baseArticle = articleFromItem(itemElement);
-    if (!baseArticle) continue;
+    const rssArticle = articleFromItem(itemElement);
+    if (!rssArticle) continue;
 
-    const article: Article = { source: url, ...baseArticle };
-
-    articles.push(article);
+    articles.push(rssArticle);
     if (articles.length >= 20) break;
   }
 

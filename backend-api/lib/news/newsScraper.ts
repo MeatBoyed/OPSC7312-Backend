@@ -4,9 +4,10 @@
 
 import { load } from "cheerio";
 import { newsSources } from "./constants";
-import { articleFromItem, articlesFromResponse, atricleFromResponse } from "@/lib/news/utils";
+import { articlesFromResponse, atricleFromResponse } from "@/lib/news/utils";
 import { BadRequest } from "@/exceptions/server";
-import { findElement } from "./cheerio";
+import { extract } from "@extractus/article-extractor";
+import { Article, RSSArticle } from "@/schemas";
 
 /**
  * Direct implemenation of Fetching XML &
@@ -14,7 +15,7 @@ import { findElement } from "./cheerio";
  * @param source RSS source
  * @returns Article[]
  */
-export const fetchNewsFromRSS = async (url: string): Promise<Article[]> => {
+export const fetchNewsFromRSS = async (url: string): Promise<RSSArticle[]> => {
   // 1 - Fetch the RSS feed
   let response;
   try {
@@ -38,11 +39,10 @@ export const fetchNewsFromRSS = async (url: string): Promise<Article[]> => {
   const responseText = await response.text();
   const articles = await articlesFromResponse(responseText, url);
 
-  console.log("Articles: ", articles);
   return articles; // 4 - Return articles
 };
 
-export const fetchSingleArticleFromRSS = async (url: string): Promise<Article | undefined> => {
+export const fetchSingleArticleFromRSS = async (url: string): Promise<RSSArticle | undefined> => {
   // 1 - Fetch the RSS feed
   let response;
   try {
@@ -66,11 +66,11 @@ export const fetchSingleArticleFromRSS = async (url: string): Promise<Article | 
   const responseText = await response.text();
   const articles = await atricleFromResponse(responseText, url);
 
-  console.log("Articles: ", articles);
+  // console.log("Articles: ", articles);
   return articles; // 4 - Return articles
 };
 
-export const getSourceNews = async (sourceCode: string): Promise<Article[]> => {
+export const getSourceNews = async (sourceCode: string): Promise<RSSArticle[]> => {
   const source = newsSources.find((src) => src.code === sourceCode.toUpperCase());
 
   if (!source) {
@@ -87,7 +87,7 @@ export const getSourceNews = async (sourceCode: string): Promise<Article[]> => {
   }
 };
 
-export const getRandomNews = async (): Promise<Article[]> => {
+export const getRandomNews = async (): Promise<RSSArticle[]> => {
   const sourceIndex = Math.floor(Math.random() * newsSources.length);
   const source = newsSources[sourceIndex];
 
@@ -100,11 +100,20 @@ export const getRandomNews = async (): Promise<Article[]> => {
   }
 };
 
-export const getTopStories = async () => {
-  return await getSourceNews("SA-N24-TS");
+export const getTopStories = async (): Promise<Article[]> => {
+  const rssArticles = await getSourceNews("SA-N24-TS");
+  return rssArticles.map((article) => ({
+    title: article.title,
+    link: article.link,
+    pubDate: article.pubDate,
+    thumbnail: article.thumbnail || "",
+    description: article.description || "",
+    content: "",
+    preview: "",
+  }));
 };
 
-export const getArticleByTitle = async (title: string) => {
+export const getArticleByTitle = async (title: string): Promise<RSSArticle | undefined> => {
   // TODO: Assume that source is from news24 (remove this state/assuption)
   const source = newsSources.find((src) => src.code === "SA-N24-TS");
 
@@ -121,4 +130,11 @@ export const getArticleByTitle = async (title: string) => {
     console.log(`getNewsSource failed: for ${source.name}, reason: ${error.message}`);
     return;
   }
+};
+
+export const getArticleContent = async (rssArticle: RSSArticle) => {
+  const article = await extract(rssArticle.link);
+  const $ = load(article?.content || "");
+  const content = $("div").text().trim().replace(/\s+/g, " ");
+  return { content: content, article: article };
 };

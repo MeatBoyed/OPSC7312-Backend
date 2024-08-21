@@ -1,4 +1,5 @@
 import { ErrorResponse } from "@/types";
+import { Article, ErrorNewsResponse, RSSArticle, SuccessNewsResponse } from "@/schemas";
 // import { NextRequest } from "next/server";
 
 export const removeEmptyLines = (text: string) => text.replace(/\n/g, "");
@@ -20,9 +21,20 @@ export const makeSuccessResponse = <T>(data: T, status?: string) => {
   const successResponse = { status: status || "success", data };
   return successResponse;
 };
-export const makeArticlesResponse = (data: Article[], status?: string): ArticlesResponse => {
+export const makeArticlesResponse = (data: Article[], status?: string): SuccessNewsResponse => {
   return { status: status || "success", totalResults: data.length, articles: data };
 };
+
+export const makeSuccessNewsResponse = (data: Article[], status?: string): SuccessNewsResponse => {
+  return { status: status || "success", totalResults: data.length, articles: data };
+};
+export const makeErrorNewsResponse = (status?: string, message?: string): ErrorNewsResponse => {
+  return { status: status || "error", message: message || "" };
+};
+
+// export const makeSuccessNewsResponseRSS = (data: RSSArticle[], status?: string): NewsResponse => {
+//   return { status: status || "success", totalResults: 1, articles: data };
+// };
 
 export const isLink = (link: string) => {
   const pattern = /^https?:\/\/[^\s/$.?#].[^\s]*$/;

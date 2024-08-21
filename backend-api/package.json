@@ -7,11 +7,21 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@extractus/article-extractor": "^8.0.10",
+    "@hono/eslint-config": "^0.0.6",
+    "@hono/swagger-ui": "^0.4.0",
+    "@hono/zod-openapi": "^0.15.3",
+    "@t3-oss/env-nextjs": "^0.11.0",
+    "ai": "^3.3.12",
+    "article-parser": "7.2.6-rc1",
     "cheerio": "^1.0.0",
-    "hono": "^4.5.6",
+    "hono": "^4.5.7",
     "next": "14.2.5",
     "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react-dom": "18.2.0",
+    "replicate": "^0.32.0",
+    "vercel": "^36.0.0",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@types/node": "18.11.18",
