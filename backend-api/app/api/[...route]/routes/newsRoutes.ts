@@ -1,5 +1,6 @@
 import { createRoute, z } from "@hono/zod-openapi";
 import { ErrorNewsResponseSchema, HomeResponseSchema, SuccessNewsResponseSchema } from "@/schemas/newsResponses";
+import { resourceLimits } from "worker_threads";
 
 export const homeRoute = createRoute({
   method: "get",
@@ -19,6 +20,22 @@ export const homeRoute = createRoute({
 export const getNewsRoute = createRoute({
   method: "get",
   path: "/",
+  request: {
+    query: z.object({
+      limit: z.number().openapi({
+        example: 10,
+        description: "The number of news articles to return",
+      }),
+      offset: z.number().openapi({
+        example: 0,
+        description: "The number of news articles to skip. Used for Pagination",
+      }),
+      category: z.string().openapi({
+        example: "Sports",
+        description: "The category of news articles to return. Used for Filtering",
+      }),
+    }),
+  },
   responses: {
     200: {
       content: {

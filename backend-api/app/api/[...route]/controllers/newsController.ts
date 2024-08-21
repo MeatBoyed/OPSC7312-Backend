@@ -8,6 +8,8 @@ const BusinessLayer = new BusinessService();
 
 export default new OpenAPIHono()
   .openapi(getNewsRoute, async (c) => {
+    const { limit, category, offset } = c.req.valid("query");
+    console.log("Search Query: ", { limit, category, offset });
     const response = await BusinessLayer.getArticles();
     if (response instanceof HTTPException) throw response;
     return c.json(response, 200);
