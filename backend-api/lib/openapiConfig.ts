@@ -1,4 +1,28 @@
-export default `
+import { Article } from "@/schemas";
+import { User } from "@/schemas/userResponses";
+
+export const exampleUser: User = {
+  uid: "c20ad4d76fe97759ad2203478b9f6a0e",
+  displayName: "John Doe",
+  email: "XK6Ji@example.com",
+  photoURL: "https://example.com/johndoe.jpg",
+  phoneNumber: "+1234567890",
+  providerId: "password",
+  favourites: [],
+};
+
+export const exampleArticle: Article = {
+  title: "News24 | South Africa's favourite teacher William Smith dies",
+  link: "https://www.news24.com/news24/southafrica/news/south-africas-favourite-teacher-william-smith-dies-20240821",
+  pubDate: "Wednesday Aug 21 2024 17:42:58",
+  thumbnail: "https://cdn.24.co.za/files/Cms/General/d/9802/d0416101470e40139a15a65cb66eae9a.jpg",
+  description:
+    "South Africa's beloved mathematics and science teacher, William Smith, who helped many pupils pass thanks to his lessons on TV over the years, has died at the age of 85.",
+  content: "",
+  preview: "",
+};
+
+export const description = `
 ## **Introduction**
 This API is designed to support a simple Android application that allows 
 users to view, search, and save news articles to their favorites, as well as 

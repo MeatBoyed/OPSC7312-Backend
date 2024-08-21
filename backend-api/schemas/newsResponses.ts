@@ -1,5 +1,5 @@
+import { ArticleSchema } from ".";
 import { z } from "@hono/zod-openapi";
-import { ArticleSchema, RSSArticleSchema } from ".";
 
 export const HomeResponseSchema = z
   .object({

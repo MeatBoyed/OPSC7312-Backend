@@ -1,34 +1,20 @@
 import { handle } from "hono/vercel";
-import { logger } from "hono/logger";
-import { homeRoute } from "./routes/routes";
-import { SwaggerUI, swaggerUI } from "@hono/swagger-ui";
+import { homeRoute } from "./routes/newsRoutes";
 import { OpenAPIHono } from "@hono/zod-openapi";
-import newsController from "./controllers/newsController";
-import descriptionAPI from "@/lib/descriptionAPI";
+import { swaggerUI } from "@hono/swagger-ui";
 
-const app = new OpenAPIHono({
-  defaultHook: (res, c) => {
-    console.log("REsss: ", res);
-    if (!res.success) {
-      return c.json(
-        {
-          articles: [],
-          message: "",
-          status: "404",
-          totalResults: 2,
-        },
-        404
-      );
-    }
-  },
-})
-  // .use(logger())
-  .basePath("/api");
+import { description } from "@/lib/openapiConfig";
+
+import newsController from "./controllers/newsController";
+import usersController from "./controllers/usersController";
+
+const app = new OpenAPIHono().basePath("/api");
 
 app.openapi(homeRoute, (c) => {
   return c.json({ secretNumber: Math.floor(Math.random() * 101).toString() });
 });
 app.route("/news", newsController);
+app.route("/users", usersController);
 
 // Provide Swagger UI for API docs
 app.get(
@@ -44,7 +30,7 @@ app.doc("/doc", {
   info: {
     version: "1.0.0",
     title: "OPSC7312-Backend API Documentation",
-    description: descriptionAPI,
+    description: description,
   },
 });
 
