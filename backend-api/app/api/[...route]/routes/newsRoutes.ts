@@ -23,15 +23,15 @@ export const getNewsRoute = createRoute({
   path: "/",
   request: {
     query: z.object({
-      limit: z.number().openapi({
+      limit: z.number().optional().openapi({
         example: 10,
         description: "The number of news articles to return",
       }),
-      offset: z.number().openapi({
+      offset: z.number().optional().openapi({
         example: 0,
         description: "The number of news articles to skip. Used for Pagination",
       }),
-      category: z.string().openapi({
+      category: z.string().optional().openapi({
         example: "Sports",
         description: "The category of news articles to return. Used for Filtering",
       }),
