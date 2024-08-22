@@ -54,8 +54,8 @@ export const SuccessFavouritesResponseSchema = z
       example: [exampleArticle],
       description: "The user's data",
     }),
-    total: z.string().openapi({
-      example: "10",
+    total: z.number().openapi({
+      example: 10,
       description: "The total number of results",
     }),
   })

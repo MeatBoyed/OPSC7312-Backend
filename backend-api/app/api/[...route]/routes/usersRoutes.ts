@@ -1,4 +1,4 @@
-import { userIdSchema } from "@/schemas";
+import { ArticleSchema, userIdSchema } from "@/schemas";
 import {
   ErrorFavouritesResponseSchema,
   ErrorUserResponseSchema,
@@ -67,6 +67,78 @@ export const getUsersFavouritesRoute = createRoute({
         },
       },
       description: "Get a specific User's Favourites",
+    },
+    500: {
+      content: {
+        "application/json": {
+          schema: ErrorFavouritesResponseSchema,
+        },
+      },
+      description: "An internal server error ocurred. Check Server logs to debug.",
+    },
+  },
+});
+
+export const postUserFavouritesRoute = createRoute({
+  method: "post",
+  path: "/:user_id/favourites",
+  request: {
+    params: z.object({
+      user_id: userIdSchema,
+    }),
+    body: {
+      content: {
+        "application/json": {
+          schema: ArticleSchema,
+        },
+      },
+      description: "The article to add to the User's favourites",
+    },
+  },
+  responses: {
+    200: {
+      content: {
+        "application/json": {
+          schema: SuccessFavouritesResponseSchema,
+        },
+      },
+      description: "The article was successfully updated to the User's favourites",
+    },
+    500: {
+      content: {
+        "application/json": {
+          schema: ErrorFavouritesResponseSchema,
+        },
+      },
+      description: "An internal server error ocurred. Check Server logs to debug.",
+    },
+  },
+});
+
+export const deleteUserFavouritesRoute = createRoute({
+  method: "delete",
+  path: "/:user_id/favourites",
+  request: {
+    params: z.object({
+      user_id: userIdSchema,
+    }),
+    body: {
+      content: {
+        "application/json": {
+          schema: ArticleSchema,
+        },
+      },
+      description: "The article to remove from the User's favourites",
+    },
+  },
+  responses: {
+    200: {
+      content: {
+        "application/json": {
+          schema: SuccessFavouritesResponseSchema,
+        },
+      },
+      description: "The article was successfully deleted to the User's favourites",
     },
     500: {
       content: {
