@@ -1,7 +1,6 @@
 /**
  * Direct implementation of Fetching & off-loading Parsing & validation of news articles from RSS.
  */
-
 import { newsSources } from "./constants";
 import { NewsError } from "@/exceptions/server";
 import { Article } from "@/schemas";
