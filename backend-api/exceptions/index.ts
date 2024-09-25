@@ -7,12 +7,16 @@ import { ServerErrorStatusCode, StatusCode } from "hono/utils/http-status";
 export const handleAPIError = (error: any, status?: StatusCode, message?: string) => {
   if (error instanceof Exception) {
     const errorResponse = makeErrorResponse(error.message);
-    return new HTTPException(error.code || status, { message: errorResponse.message, cause: errorResponse });
+    return new HTTPException(error.code || status, {
+      message: errorResponse.message,
+      cause: errorResponse,
+    });
   }
-
-  // console.error(error);
   const errorResponse = makeErrorResponse(message || "Internal Server Error");
-  return new HTTPException(error.code || status, { message: errorResponse.message, cause: errorResponse });
+  return new HTTPException(error.code || status, {
+    message: errorResponse.message,
+    cause: errorResponse,
+  });
 };
 
 // Handle News SDK errors

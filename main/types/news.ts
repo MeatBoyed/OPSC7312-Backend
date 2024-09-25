@@ -16,21 +16,15 @@ interface Article extends BaseArticle {
   source: string;
 }
 
-interface INewsRepository {
-  /**
-   * Get all Top Story articles
-   */
-  getArticles(): Promise<Article[]>;
-  /**
-   * Get an article by its title
-   * @param title The title of the article
-   */
-  getArticleByTitle(title: string): Promise<Article>;
-  /**
-   * Get articles from a specific news source
-   * @param source The news source of the article
-   */
-  getArticlesBySource(source: string): Promise<Article[]>;
+export enum NewsCategories {
+  TopStories = "SA-N24-TS",
+  SouthAfrica = "SA-N24-SA",
+  Africa = "SA-N24-Afri",
+  World = "SA-N24-Wrld",
+  Tech = "SA-N24-Tech",
+  Sport = "SA-N24-Sport",
+  Business = "SA-N24-Bus",
+  Opinion = "SA-N24-Op",
 }
 
 interface ArticlesResponse {

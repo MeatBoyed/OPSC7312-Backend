@@ -1,7 +1,11 @@
 import { createRoute, z } from "@hono/zod-openapi";
-import { ErrorNewsResponseSchema, HomeResponseSchema, SuccessNewsResponseSchema } from "@/schemas/newsResponses";
-import { resourceLimits } from "worker_threads";
+import {
+  ErrorNewsResponseSchema,
+  HomeResponseSchema,
+  SuccessNewsResponseSchema,
+} from "@/schemas/newsResponses";
 import { exampleArticle } from "@/lib/openapiConfig";
+import { categoryTypeEnum } from "@/lib/news";
 
 export const homeRoute = createRoute({
   method: "get",
@@ -31,10 +35,7 @@ export const getNewsRoute = createRoute({
         example: 0,
         description: "The number of news articles to skip. Used for Pagination",
       }),
-      category: z.string().optional().openapi({
-        example: "Sports",
-        description: "The category of news articles to return. Used for Filtering",
-      }),
+      category: categoryTypeEnum.optional(),
     }),
   },
   responses: {

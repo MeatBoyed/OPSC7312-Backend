@@ -47,6 +47,9 @@ importers:
       replicate:
         specifier: ^0.32.0
         version: 0.32.0
+      ts-results:
+        specifier: ^3.3.0
+        version: 3.3.0
       vercel:
         specifier: ^36.0.0
         version: 36.0.0
@@ -2332,6 +2335,9 @@ packages:
         optional: true
       '@swc/wasm':
         optional: true
+
+  ts-results@3.3.0:
+    resolution: {integrity: sha512-FWqxGX2NHp5oCyaMd96o2y2uMQmSu8Dey6kvyuFdRJ2AzfmWo3kWa4UsPlCGlfQ/qu03m09ZZtppMoY8EMHuiA==}
 
   ts-toolbelt@6.15.5:
     resolution: {integrity: sha512-FZIXf1ksVyLcfr7M317jbB67XFJhOO1YqdTcuGaq9q5jLUoTikukZ+98TPjKiP2jC5CgmYdWWYs0s2nLSU0/1A==}
@@ -5002,6 +5008,8 @@ snapshots:
       typescript: 4.9.5
       v8-compile-cache-lib: 3.0.1
       yn: 3.1.1
+
+  ts-results@3.3.0: {}
 
   ts-toolbelt@6.15.5: {}
 

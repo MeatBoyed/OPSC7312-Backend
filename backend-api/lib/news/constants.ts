@@ -1,14 +1,54 @@
+import { Source } from ".";
+
 export const newsSources: Source[] = [
   // -------- South African Feeds --------
   {
     code: "SA-N24-TS",
+    category: "topstories",
     name: "News 24 - Top Stories",
     url: "https://feeds.capi24.com/v1/Search/articles/news24/TopStories/rss",
   },
   {
+    code: "SA-N24-SA",
+    category: "southafrica",
+    name: "News 24 - South Africa",
+    url: "https://feeds.capi24.com/v1/Search/articles/news24/SouthAfrica/rss",
+  },
+  {
+    code: "SA-N24-Afri",
+    category: "africa",
+    name: "News 24 - Africa",
+    url: "https://feeds.capi24.com/v1/Search/articles/news24/Africa/rss",
+  },
+  {
+    code: "SA-N24-Wrld",
+    category: "world",
+    name: "News 24 - World",
+    url: "https://feeds.capi24.com/v1/Search/articles/news24/World/rss",
+  },
+  {
     code: "SA-N24-Tech",
+    category: "tech",
     name: "News 24 - Tech",
     url: "https://feeds.capi24.com/v1/Search/articles/fin24/tech/rss",
+  },
+  {
+    code: "SA-N24-Sport",
+    category: "sport",
+    name: "News 24 - Sport",
+    url: "https://feeds.capi24.com/v1/Search/articles/sport/featured/topstories/rss",
+  },
+  {
+    code: "SA-N24-Bus",
+    category: "business",
+    name: "News 24 - Business",
+    url: "https://feeds.capi24.com/v1/Search/articles/fin24/news/rss",
+  },
+  {
+    code: "SA-N24-Op",
+    category: "opinion",
+    name: "News 24 - Oppinons",
+    url: "https://feeds.capi24.com/v1/Search/articles/news24/opinions/rss",
   },
   // -------- International Feeds --------
   {

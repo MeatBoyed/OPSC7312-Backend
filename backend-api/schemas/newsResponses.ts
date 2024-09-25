@@ -29,12 +29,16 @@ export const SuccessNewsResponseSchema = z
           pubDate: "pubDate",
           thumbnail: "thumbnail",
           preview: "a shorted version of the articles content",
+          category: "sport",
         },
       ],
-      description: "The sourced articles. When querying for a single Article, that specific article will be stored here.",
+      description:
+        "The sourced articles. When querying for a single Article, that specific article will be stored here.",
     }),
   })
-  .openapi("News Success Res", { description: "The (Default) Success response object for the /News Routes." });
+  .openapi("News Success Res", {
+    description: "The (Default) Success response object for the /News Routes.",
+  });
 export type SuccessNewsResponse = z.infer<typeof SuccessNewsResponseSchema>;
 
 export const ErrorNewsResponseSchema = z
@@ -48,5 +52,7 @@ export const ErrorNewsResponseSchema = z
       description: "The error message",
     }),
   })
-  .openapi("News Error Res", { description: "The (default) Error response object for the /News Routes." });
+  .openapi("News Error Res", {
+    description: "The (default) Error response object for the /News Routes.",
+  });
 export type ErrorNewsResponse = z.infer<typeof ErrorNewsResponseSchema>;
