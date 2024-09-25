@@ -8,8 +8,10 @@ import { newsSources } from "@/lib/news/constants";
 import { BadRequest } from "@/exceptions/server";
 import { findChild, findElement } from "./cheerio";
 import { RSSArticle } from "@/schemas";
+import { extract } from "@extractus/article-extractor";
 
-export const isValidSource = (sourceName: string) => !!newsSources.find((src) => src.code === sourceName.toUpperCase());
+export const isValidSource = (sourceName: string) =>
+  !!newsSources.find((src) => src.code === sourceName.toUpperCase());
 
 export const validateSource = (sourceName: string | null) => {
   if (!sourceName) {
@@ -35,7 +37,10 @@ export const validateSource = (sourceName: string | null) => {
 export const articleFromItem = (itemElement: Cheerio<any>) => {
   // Assign elements
   const titleElement = findChild(itemElement, "title");
-  const linkElement = findChild(itemElement, "link") || findChild(itemElement, "url") || findChild(itemElement, "guid");
+  const linkElement =
+    findChild(itemElement, "link") ||
+    findChild(itemElement, "url") ||
+    findChild(itemElement, "guid");
   const pubDateElement = findChild(itemElement, "pubDate") || findChild(itemElement, "dc\\:date");
   const descriptionElement = findChild(itemElement, "description");
   const thumbnailElement = findChild(itemElement, "enclosure");
@@ -76,7 +81,10 @@ export const articleFromItem = (itemElement: Cheerio<any>) => {
 export const articleFromChannel = (itemElement: Cheerio<any>) => {
   // Assign elements
   const titleElement = findChild(itemElement, "title");
-  const linkElement = findChild(itemElement, "link") || findChild(itemElement, "url") || findChild(itemElement, "guid");
+  const linkElement =
+    findChild(itemElement, "link") ||
+    findChild(itemElement, "url") ||
+    findChild(itemElement, "guid");
   const pubDateElement = findChild(itemElement, "pubDate") || findChild(itemElement, "dc\\:date");
 
   if (!titleElement || !linkElement || !pubDateElement) {
@@ -144,4 +152,11 @@ export const articlesFromResponse = (responseText: string, url: string): RSSArti
   }
 
   return articles;
+};
+
+export const getArticleContent = async (rssArticle: RSSArticle) => {
+  const article = await extract(rssArticle.link);
+  const $ = load(article?.content || "");
+  const content = $("div").text().trim().replace(/\s+/g, " ");
+  return { content: content, article: article };
 };

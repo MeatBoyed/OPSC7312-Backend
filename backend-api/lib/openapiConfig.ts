@@ -20,6 +20,7 @@ export const exampleArticle: Article = {
     "South Africa's beloved mathematics and science teacher, William Smith, who helped many pupils pass thanks to his lessons on TV over the years, has died at the age of 85.",
   content: "",
   preview: "",
+  category: "business",
 };
 
 export const description = `

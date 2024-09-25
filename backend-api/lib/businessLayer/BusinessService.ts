@@ -9,10 +9,11 @@
  */
 import { handleAPIError, makeAPIError } from "@/exceptions";
 import NewsRepository from "../news";
-import { makeArticlesResponse, makeErrorNewsResponse, makeSuccessNewsResponse } from "../utils";
+import { makeSuccessNewsResponse } from "../utils";
 import { HTTPException } from "hono/http-exception";
-import { ErrorNewsResponse, SuccessNewsResponse } from "@/schemas";
-import { NewsError } from "@/exceptions/server";
+import { Article, SuccessNewsResponse } from "@/schemas";
+import { Err, Ok, Result } from "ts-results";
+import { z } from "zod";
 
 /**
  * Interface for the Business Layer.
@@ -21,41 +22,47 @@ import { NewsError } from "@/exceptions/server";
  * Returns an HTTP Exception on Error
  * @interface IBusinessService
  */
-export default class BusinessService implements IBusinessService {
-  private newsRepository: NewsRepository;
+export default class BusinessService {
+  // The response type uses a Rust implementation of handling errors (errors should always be a value)
+  static async getArticlesByTitle(
+    title: string
+  ): Promise<Result<SuccessNewsResponse, HTTPException>> {
+    const article = await NewsRepository.getArticleByTitle(title);
+    if (article.err)
+      // Handling the error as a value, and bubbling up the info to the caller for debugging, while keeping data privacy.
+      return Err(handleAPIError(article.val.cause, article.val.code, article.val.message));
 
-  constructor() {
-    this.newsRepository = new NewsRepository();
+    return Ok(makeSuccessNewsResponse([article.val]));
   }
 
-  async getArticles() {
-    try {
-      const articles = await this.newsRepository.getArticles();
+  static async getArticles(
+    limit?: number,
+    offset?: number,
+    category?: string
+  ): Promise<Result<SuccessNewsResponse, HTTPException>> {
+    let response: Article[];
 
-      if (articles.length === 0) return makeAPIError(404, "No articles found, please try again.");
-      return makeSuccessNewsResponse(articles);
-    } catch (error) {
-      console.log("Business Service Error, getArticles: ", error);
-      return handleAPIError(error);
+    // Category filtering implementation
+    if (category) {
+      const res = await NewsRepository.getArticlesByCategory(category);
+      if (res.err) return Err(handleAPIError(res.val.cause, res.val.code, res.val.message));
+      response = res.val;
+    } else {
+      const res = await NewsRepository.getArticles();
+      if (res.err) return Err(handleAPIError(res.val.cause, res.val.code, res.val.message));
+      response = res.val;
     }
-  }
 
-  async getArticlesByTitle(title: string) {
-    try {
-      const article = await this.newsRepository.getArticleByTitle(title);
-      return makeSuccessNewsResponse([article]);
-    } catch (error) {
-      console.log("Business Service Error, getArticlesByTitle: ", error);
-      if (error instanceof NewsError) {
-        return makeAPIError(error.code, error.message);
-      }
-      return handleAPIError(error);
-    }
-  }
-}
+    // Handle an Empty Response
+    if (response.length === 0)
+      return Err(makeAPIError(404, "No articles found, please try again."));
 
-// Bussiness Service Interface
-interface IBusinessService {
-  getArticles(): Promise<SuccessNewsResponse | HTTPException>;
-  getArticlesByTitle(title: string): Promise<SuccessNewsResponse | HTTPException>;
+    // Limit Implementation
+    if (limit && response.length > limit) response = response.slice(offset, limit);
+
+    // Offset Implementation
+    if (offset && offset > 0) response = response.slice(offset);
+
+    return Ok(makeSuccessNewsResponse(response));
+  }
 }

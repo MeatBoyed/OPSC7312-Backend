@@ -1,28 +1,27 @@
 import BusinessService from "@/lib/businessLayer";
 import { OpenAPIHono } from "@hono/zod-openapi";
-import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { getNewsArticleRoute, getNewsRoute } from "../routes/newsRoutes";
 
-const BusinessLayer = new BusinessService();
-
+// Defines, Executes the API Routes for the "/news" route.
 export default new OpenAPIHono()
+  // The "getNewsRoute" is an OpenAPI Zod Schema to provide typesafety and generated documentation
   .openapi(getNewsRoute, async (c) => {
-    const { limit, category, offset } = c.req.valid("query");
+    const { limit, category, offset } = c.req.valid("query"); // type safe values (hover over the categories variable ;)
     console.log("Search Query: ", { limit, category, offset });
-    const response = await BusinessLayer.getArticles();
-    if (response instanceof HTTPException) throw response;
-    return c.json(response, 200);
+
+    const response = await BusinessService.getArticles(limit, offset, category);
+    if (response.err) {
+      console.log("Business Service Error in Controller: ", response.val);
+      throw response.val;
+    }
+
+    return c.json(response.val, 200);
   })
   .openapi(getNewsArticleRoute, async (c) => {
-    const response = await BusinessLayer.getArticlesByTitle(c.req.param("title"));
+    const response = await BusinessService.getArticlesByTitle(c.req.param("title"));
     if (response instanceof HTTPException) throw response;
-    return c.json(response, 200);
-  });
-//   .get("/:source", async (c) => {
-//     const source = c.req.param("source");
+    if (response.err) throw response.val;
 
-//     const articles = await News.getArticlesBySource(source);
-//     const successResponse = makeSuccessResponse(articles);
-//     return c.json(successResponse);
-//   });
+    return c.json(response.val, 200);
+  });
